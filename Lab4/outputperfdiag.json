@@ -1,0 +1,222 @@
+{
+  "sysinfo": {
+    "boto_https_enabled": true,
+    "using_proxy": false,
+    "ip_address": "192.168.56.1",
+    "tempdir": "C:\\Users\\Andre\\AppData\\Local\\Temp",
+    "gmt_timestamp": "Fri, 21 Apr 2023 09:28:13 +0000",
+    "googserv_route": "ns1",
+    "bucket_location": "ASIA-SOUTHEAST1",
+    "bucket_storageClass": "STANDARD",
+    "google_host_dns_latency": 0.0009400844573974609,
+    "googserv_ips": [
+      "142.250.200.144",
+      "216.58.209.80",
+      "142.250.200.80",
+      "142.250.201.80",
+      "216.58.215.144",
+      "216.58.215.176",
+      "142.250.200.112",
+      "142.250.185.16",
+      "142.250.184.16",
+      "142.250.184.176"
+    ],
+    "googserv_hostnames": [
+      "mad41s14-in-f16.1e100.net",
+      "waw02s06-in-f80.1e100.net",
+      "mad07s24-in-f16.1e100.net",
+      "mad07s25-in-f16.1e100.net",
+      "mad41s04-in-f16.1e100.net",
+      "mad41s07-in-f16.1e100.net",
+      "mad41s13-in-f16.1e100.net",
+      "mad41s11-in-f16.1e100.net",
+      "mad41s10-in-f16.1e100.net",
+      "mad07s23-in-f16.1e100.net"
+    ],
+    "dns_o-o_ip": "172.68.101.5",
+    "google_host_connect_latencies": {
+      "142.250.184.176": 0.028877735137939453
+    },
+    "cpu_count": 8,
+    "load_avg": null,
+    "meminfo": {
+      "mem_total": null,
+      "mem_free": null,
+      "mem_buffers": null,
+      "mem_cached": null
+    },
+    "gsutil_config": {
+      "CHECK_HASH_ALWAYS": "always",
+      "CHECK_HASH_IF_FAST_ELSE_FAIL": "if_fast_else_fail",
+      "CHECK_HASH_IF_FAST_ELSE_SKIP": "if_fast_else_skip",
+      "CHECK_HASH_NEVER": "never",
+      "DEFAULT_GZIP_COMPRESSION_LEVEL": 9,
+      "DEFAULT_MAX_UPLOAD_COMPRESSION_BUFFER_SIZE": "2G",
+      "DEFAULT_PARALLEL_COMPOSITE_UPLOAD_COMPONENT_SIZE": "50M",
+      "DEFAULT_PARALLEL_COMPOSITE_UPLOAD_THRESHOLD": "0",
+      "DEFAULT_PARALLEL_PROCESS_COUNT": 1,
+      "DEFAULT_PARALLEL_THREAD_COUNT": 24,
+      "DEFAULT_SLICED_OBJECT_DOWNLOAD_COMPONENT_SIZE": "200M",
+      "DEFAULT_SLICED_OBJECT_DOWNLOAD_MAX_COMPONENTS": 4,
+      "DEFAULT_SLICED_OBJECT_DOWNLOAD_THRESHOLD": "150M",
+      "DEFAULT_TASK_ESTIMATION_THRESHOLD": 30000,
+      "GOOG_CLOUD_CONSOLE_URI": "https://cloud.google.com/console#/project",
+      "HAS_CRYPTO": true,
+      "MAX_COMPOSE_ARITY": 32
+    },
+    "tcp_proc_values": {},
+    "netstat_start": {
+      "tcp_retransmit": 86,
+      "tcp_received": 582551,
+      "tcp_sent": 232637
+    },
+    "netstat_end": {
+      "tcp_retransmit": 89,
+      "tcp_received": 600763,
+      "tcp_sent": 255273
+    }
+  },
+  "bucket_uri": "gs://cn2223-g06-asia/",
+  "json_format": "perfdiag",
+  "metadata": {},
+  "latency": {
+    "UPLOAD_0": [
+      2.136258602142334,
+      2.0384135246276855,
+      2.025787591934204,
+      2.023176670074463,
+      2.0385560989379883
+    ],
+    "METADATA_0": [
+      0.3500404357910156,
+      0.3510594367980957,
+      0.3613741397857666,
+      0.3607139587402344,
+      0.3715810775756836
+    ],
+    "DOWNLOAD_0": [
+      1.985713005065918,
+      2.0204355716705322,
+      1.9979684352874756,
+      2.0337514877319336,
+      1.9621798992156982
+    ],
+    "DELETE_0": [
+      0.3756070137023926,
+      0.37143468856811523,
+      0.3674736022949219,
+      0.38981127738952637,
+      0.37352609634399414
+    ],
+    "UPLOAD_1024": [
+      2.0769550800323486,
+      2.004894733428955,
+      2.0312607288360596,
+      2.050474166870117,
+      2.0028810501098633
+    ],
+    "METADATA_1024": [
+      0.3693869113922119,
+      0.37163209915161133,
+      0.35946130752563477,
+      0.3545043468475342,
+      0.33349108695983887
+    ],
+    "DOWNLOAD_1024": [
+      1.9826223850250244,
+      1.9585120677947998,
+      2.484489917755127,
+      0.4730103015899658,
+      1.9866929054260254
+    ],
+    "DELETE_1024": [
+      0.36561131477355957,
+      0.3705577850341797,
+      0.37898993492126465,
+      1.0714869499206543,
+      0.3624989986419678
+    ],
+    "UPLOAD_102400": [
+      3.001497983932495,
+      3.0004067420959473,
+      3.0290980339050293,
+      2.997450590133667,
+      1.5407462120056152
+    ],
+    "METADATA_102400": [
+      0.3582637310028076,
+      0.34242916107177734,
+      0.3641810417175293,
+      0.3394911289215088,
+      0.33989834785461426
+    ],
+    "DOWNLOAD_102400": [
+      3.3574814796447754,
+      3.110074758529663,
+      3.0519723892211914,
+      3.0720267295837402,
+      1.5086274147033691
+    ],
+    "DELETE_102400": [
+      0.3750905990600586,
+      0.37745165824890137,
+      0.39796948432922363,
+      0.36039113998413086,
+      0.36483311653137207
+    ],
+    "UPLOAD_1048576": [
+      4.752635478973389,
+      4.77814793586731,
+      4.888405799865723,
+      4.727324962615967,
+      4.738401889801025
+    ],
+    "METADATA_1048576": [
+      0.34366321563720703,
+      0.3491065502166748,
+      0.3562760353088379,
+      0.3417644500732422,
+      0.3350827693939209
+    ],
+    "DOWNLOAD_1048576": [
+      4.232828855514526,
+      4.244516849517822,
+      4.249213933944702,
+      4.247239351272583,
+      4.227762937545776
+    ],
+    "DELETE_1048576": [
+      0.37926244735717773,
+      0.40500545501708984,
+      0.3739471435546875,
+      0.4519038200378418,
+      0.37589454650878906
+    ]
+  },
+  "read_throughput": {
+    "file_size": 1048576,
+    "processes": 1,
+    "threads": 1,
+    "parallelism": null,
+    "time_took": 21.00551152229309,
+    "total_bytes_copied": 5242880,
+    "bytes_per_second": 249595.44519712107
+  },
+  "write_throughput": {
+    "file_size": 1048576,
+    "processes": 1,
+    "threads": 1,
+    "parallelism": null,
+    "gzip_encoded_writes": false,
+    "gzip_compression_ratio": 100,
+    "time_took": 23.781663179397583,
+    "total_bytes_copied": 5242880,
+    "bytes_per_second": 220458.92923679057
+  },
+  "total_requests": 94,
+  "request_errors": 0,
+  "error_responses_by_code": {},
+  "connection_breaks": 0,
+  "gsutil_version": "5.23",
+  "boto_version": "2.49.0"
+}
