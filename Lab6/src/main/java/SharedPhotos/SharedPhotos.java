@@ -8,10 +8,12 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Internal;
 import com.google.pubsub.v1.*;
-
+import SharedPhotos.StorageOperations;
 import java.io.*;
 import java.util.concurrent.ExecutionException;
 
@@ -20,8 +22,14 @@ public class SharedPhotos {
     static String PROJECT_ID = "cn2223-t2-g06";
     static TopicAdminClient topicAdmin;
 
+    static StorageOperations storageOperations;
+
     public static void main(String[] args) throws Exception {
         topicAdmin = TopicAdminClient.create();
+
+        StorageOptions storageOptions = StorageOptions.getDefaultInstance();
+        Storage storage = storageOptions.getService();
+        storageOperations = new StorageOperations(storage);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -33,6 +41,9 @@ public class SharedPhotos {
                      "3- Criar subscrição\n" +
                      "4- Publicar mensagem\n" +
                      "5- Aceder a subscrição\n" +
+                     "6- Create Bucket\n" +
+                     "7- List buckets\n" +
+                     "8- upload photo\n" +
                      "q- Terminar\n\n" +
                      "Comando: ");
              line = reader.readLine();
@@ -54,6 +65,15 @@ public class SharedPhotos {
                  case 5:
                      createSubscriber(reader);
                      break;
+                 case 6:
+                     CreateBucket(reader);
+                      break;
+                 case 7:
+                     ListBuckets();
+                     break;
+                 case 8:
+                     UploadPhoto(reader);
+                     break;
                  default:
                      System.out.println("Comando inválido\n\n");
                      break;
@@ -62,6 +82,23 @@ public class SharedPhotos {
 
 
         topicAdmin.close();
+    }
+
+    private static void CreateBucket(BufferedReader reader) throws Exception {
+        System.out.println("Bucket Name: ");
+        String bucketName = reader.readLine();
+        storageOperations.createBucket(bucketName);
+    }
+    private  static void ListBuckets() throws Exception {
+        storageOperations.listBuckets(PROJECT_ID);
+    }
+    private static void UploadPhoto(BufferedReader reader) throws Exception {
+        System.out.println("Bucket name:");
+        String bucketName = reader.readLine();
+        System.out.println("Ficheiro: ");
+        String fileName = reader.readLine();
+        File file = new File(fileName);
+        storageOperations.uploadBlobToBucket(bucketName, fileName, file.getAbsolutePath());
     }
 
     private static void createTopic(BufferedReader reader) throws IOException {
@@ -87,8 +124,7 @@ public class SharedPhotos {
         SubscriptionName subscriptionName = SubscriptionName.of(PROJECT_ID, subsName);
         SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create();
         PushConfig pconfig=PushConfig.getDefaultInstance();
-        //PushConfig.newBuilder().setPushEndpoint(ConsumerURL).build();
-        Subscription subscription = subscriptionAdminClient.createSubscription(subscriptionName, topicName, pconfig, 0);
+        subscriptionAdminClient.createSubscription(subscriptionName, topicName, pconfig, 0);
         subscriptionAdminClient.close();
     }
 
