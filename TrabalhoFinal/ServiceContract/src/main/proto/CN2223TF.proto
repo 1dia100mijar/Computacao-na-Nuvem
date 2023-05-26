@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "cn2223tf";
+
+package cn2223tf;
+
+service CN2223TF {
+  rpc uploadPhoto(stream Block) returns (BlobIdentifier);
+  rpc getLandmarks(BlobIdentifier) returns (LandMarksResult);
+  rpc getMapImage(BlobIdentifier) returns (MapResult);
+  rpc getAccurateLandmarks (Accuracy) returns (AccuracyResult);
+}
+
+message Block {
+  string blobName=1;
+  bytes data=2;
+  string dataType=3;
+}
+
+message BlobIdentifier {
+  string id=1;
+}
+
+message LandMarksResult{
+  repeated LandmarkElement landmark=1;
+}
+
+message LandmarkElement{
+  string name=1;
+  float latitude=2;
+  float longitude=3;
+  float accuracy=4;
+}
+
+message MapResult{
+  bytes map=1;
+}
+
+message Accuracy{
+  float accuracy=1;
+}
+
+message AccuracyResult{
+  repeated LandMarkAccuracyResult landmark=1;
+}
+
+message LandMarkAccuracyResult{
+  string name=1;
+  string imageName=2;
+}
