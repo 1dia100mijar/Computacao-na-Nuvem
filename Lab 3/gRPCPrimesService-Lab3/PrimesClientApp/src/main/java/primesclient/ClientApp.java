@@ -49,7 +49,6 @@ public class ClientApp {
 
     }
 
-
     public static void main(String[] args) {
         try{
             channel = ManagedChannelBuilder.forAddress(svcIP, svcPort)
@@ -66,27 +65,6 @@ public class ClientApp {
         }catch(Exception exp){
             exp.printStackTrace();
         }
-        /*
-        1-
-Sobre o desenvolvimento de aplicações gRPC no Laboratório 3 indique quais as questões Verdadeiras ou Falsas
-F -  Se a operação rpc findPrimes (PrimesInterval) returns (stream Prime);
-for chamada com um stub bloqueante, a aplicação cliente só obtém o resultado, através de um iterador de uma coleção, após o servidor calcular
-todos os números primos existentes no intervalo.
-
-V - Se um cliente pretender calcular números primos num intervalo muito grande, pode explorar a concorrência implícita existente
-no servidor, dividindo o intervalo em subintervalos e chamar a operação
-rpc findPrimes (PrimesInterval) returns (stream Prime);
-para cada subintervalo com um stub não bloqueante e passar um objeto do tipo StreamObserver<Prime> para obter os primos existentes em cada
-subintervalo.
-
-F- Na operação rpc connectToManager (stream Information) returns (stream Information);
-com stream de cliente e stream de servidor o número de mensagens entre cliente e servidor tem de ser sempre igual, isto é, por cada mensagem da
-aplicação cliente o servidor tem de responder também com uma mensagem.
-
-V- Na aplicação cliente, a chamada da operação rpc connectToManager (stream Information) returns (stream Information);
-tem forçosamente de ser efetuada com um stub não bloqueante.
-         */
-
     }
 
 

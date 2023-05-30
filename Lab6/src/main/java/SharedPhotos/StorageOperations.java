@@ -128,6 +128,7 @@ public class StorageOperations {
         String contentType = Files.probeContentType(uploadFrom);
         BlobId blobId = BlobId.of(bucketName, blobName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
+        System.out.println(blobInfo);
         if (Files.size(uploadFrom) > 1_000_000) {
             // When content is not available or large (1MB or more) it is recommended
             // to write it in chunks via the blob's channel writer.

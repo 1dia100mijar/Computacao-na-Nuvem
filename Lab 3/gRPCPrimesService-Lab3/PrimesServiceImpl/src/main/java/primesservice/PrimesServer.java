@@ -28,18 +28,6 @@ public class PrimesServer extends PrimesServiceGrpc.PrimesServiceImplBase {
         responseObserver.onNext(text);
         responseObserver.onCompleted();
     }
-    /*
-    2-
-Relativamente ao desenvolvimento de aplicações distribuídas em gRPC indique quais as questões Verdadeiras ou Falsas
-V-  Numa operação com stream de cliente, a aplicação cliente tem a garantia que as mensagens chegam ao servidor pela ordem
-com que forem enviadas;
-F- A assinatura do método onNext da interface StreamObserver tem um número variável de parâmetros em função do contrato
-protobuf;
-F- Dada a definição de um serviço em protobuf, o servidor implementa métodos diferentes para executar as chamadas via stub
-bloqueante ou stub não bloqueante.
-V Na aplicação cliente desenvolvida no laboratório 4 a operação rpc publishMessage(ForumMessage) returns (google.protobuf.Empty);
-pode ser chamada com qualquer dos dois tipos de stub (bloqueante ou não bloqueante)
-     */
 
     @Override
     public void findPrimes(PrimesInterval primesInterval, StreamObserver<Prime> responseObserver){

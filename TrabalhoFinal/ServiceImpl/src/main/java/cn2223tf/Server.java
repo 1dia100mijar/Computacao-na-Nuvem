@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Server extends CN2223TFGrpc.CN2223TFImplBase {
     private static int svcPort = 8000;
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try{
             io.grpc.Server svc = ServerBuilder.forPort(svcPort).addService(new Server()).build();
             svc.start();
@@ -24,10 +24,22 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
 
     @Override
     public StreamObserver<Block> uploadPhoto(StreamObserver<BlobIdentifier> responseObserver) {
-        Text text = Text.newBuilder().setMsg("aliveMessage").build();
+        System.out.println("Upload photo called");
+        return new ServerStreamObserverBlobIdentifier(responseObserver);
+    }
 
+    @Override
+    public void getLandmarks(BlobIdentifier request, StreamObserver<LandMarksResult> responseObserver){
+    }
 
-        return null;
+    @Override
+    public void getMapImage(BlobIdentifier request, StreamObserver<MapResult> responseObserver){
+
+    }
+
+    @Override
+    public void getAccurateLandmarks(Accuracy request, StreamObserver<AccuracyResult> responseObserver){
+
     }
 
 }
