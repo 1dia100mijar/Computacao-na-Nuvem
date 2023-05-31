@@ -60,11 +60,11 @@ public class ClientApp {
             blockRequest.onCompleted();
         }
         while (!blobIdentifierObserver.isCompleted()) {
-            System.out.println("Active and waiting for Case2 completed ");
+            System.out.println("Waiting for server to Upload Photo");
             Thread.sleep(1 * 1000);
         }
         if (blobIdentifierObserver.OnSuccesss()) {
-            System.out.println("finished");
+            System.out.println("Photo Uploaded!");
         }
     }
 

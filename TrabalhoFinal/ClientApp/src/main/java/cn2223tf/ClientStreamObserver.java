@@ -28,7 +28,7 @@ public class ClientStreamObserver implements StreamObserver<BlobIdentifier>{
 
     @Override
     public void onCompleted() {
-        System.out.println("Stream completed");
+        System.out.println("Upload Completed!");
         isCompleted=true; success=true;
         System.out.println("Photo ID: " + blobsIdentifier.getId());
     }

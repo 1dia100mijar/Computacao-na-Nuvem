@@ -1,5 +1,6 @@
 package cn2223tf;
 
+import com.google.cloud.pubsub.v1.TopicAdminClient;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
@@ -7,8 +8,12 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Server extends CN2223TFGrpc.CN2223TFImplBase {
+    //Storage
+    static String BUCKETNAME = "cn2223-g06-tf";
+
     private static int svcPort = 8000;
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
         try{
             io.grpc.Server svc = ServerBuilder.forPort(svcPort).addService(new Server()).build();
             svc.start();
@@ -21,6 +26,7 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public StreamObserver<Block> uploadPhoto(StreamObserver<BlobIdentifier> responseObserver) {
