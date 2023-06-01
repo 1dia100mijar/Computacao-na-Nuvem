@@ -8,7 +8,7 @@ package cn2223tf;
 service CN2223TF {
   rpc uploadPhoto(stream Block) returns (BlobIdentifier);
   rpc getLandmarks(BlobIdentifier) returns (LandMarksResult);
-  rpc getMapImage(BlobIdentifier) returns (MapResult);
+  rpc getMapImage(BlobIdentifier) returns (stream MapResult);
   rpc getAccurateLandmarks (Accuracy) returns (AccuracyResult);
 }
 

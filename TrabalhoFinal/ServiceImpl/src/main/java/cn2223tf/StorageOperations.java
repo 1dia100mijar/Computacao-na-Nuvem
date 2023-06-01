@@ -109,8 +109,7 @@ public class StorageOperations {
 
     public String[] uploadBlobToBucket(String bucketName, byte[] blobData, String photoName, String contentType) throws Exception {
         UUID randomUUID = UUID.randomUUID();
-        String blobName = randomUUID+photoName;
-
+        String blobName = randomUUID+"/"+photoName;
         BlobId blobId = BlobId.of(bucketName, blobName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
         try (WriteChannel writer = storage.writer(blobInfo)) {

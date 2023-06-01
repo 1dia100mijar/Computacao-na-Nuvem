@@ -27,20 +27,9 @@ public class PubSub {
     public static void createPubSubTopic() throws IOException {
         topicAdmin = TopicAdminClient.create();
         if(!verifyIfTopicExists(PubSubTopicName)){
+            System.out.println("Creating topic PUBSUB");
             TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, PubSubTopicName);
-            Schema schema = createSchema();
-
-            SchemaSettings schemaSettings =
-                    SchemaSettings.newBuilder()
-                            .setSchema(schema.getName())
-                            .build();
-            Topic topic =
-                    topicAdmin.createTopic(
-                            Topic.newBuilder()
-                                    .setName(tName.toString())
-                                    .setSchemaSettings(schemaSettings)
-                                    .build());
-
+            Topic topic=topicAdmin.createTopic(tName);
         }
     }
     public static boolean verifyIfTopicExists(String topicName){
@@ -53,28 +42,6 @@ public class PubSub {
         return haveTopic;
     }
 
-    public static Schema createSchema() throws IOException {
-//        ProjectName projectName = ProjectName.of(PROJECT_ID);
-//        SchemaName schemaName = SchemaName.of(PROJECT_ID, Schema_ID);
-//
-//        // Read an Avro schema file formatted in JSON as a string.
-//        String avscSource = new String(Files.readAllBytes(Paths.get(avscFile)));
-//
-//        SchemaServiceClient schemaServiceClient= SchemaServiceClient.create();
-//
-//        Schema schema = schemaServiceClient.createSchema(
-//                        projectName,
-//                        Schema.newBuilder()
-//                                .setName(schemaName.toString())
-//                                .setType(Schema.Type.AVRO)
-//                                .setDefinition(avscSource)
-//                                .build(),
-//                        Schema_ID);
-//        System.out.println("Schema Created!");
-//        return schema;
-        return null;
-    }
-
     public static void publishMessage(String requestId, String bucketName, String blobName) throws ExecutionException, InterruptedException, IOException {
         String topicName = PubSubTopicName;
 
@@ -82,16 +49,9 @@ public class PubSub {
         TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, topicName);
         Publisher publisher = Publisher.newBuilder(tName).build();
 
-        Map<String, String> map = new HashMap<>();
-        map.put("requestId", requestId);
-        map.put("bucketName", bucketName);
-        map.put("blobName", blobName);
-
-
         PubsubMessage pubsubMessage = PubsubMessage.newBuilder()
                 .putAllAttributes(ImmutableMap.of("requestId", requestId, "bucketName", bucketName,"blobName", blobName ))
                 .build();
-        System.out.println(pubsubMessage);
         ApiFuture<String> future = publisher.publish(pubsubMessage);
         String msgID = future.get();
         System.out.println("Message Published with ID=" + msgID);

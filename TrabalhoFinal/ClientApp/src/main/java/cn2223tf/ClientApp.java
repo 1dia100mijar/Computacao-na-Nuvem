@@ -4,9 +4,7 @@ import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import org.checkerframework.checker.units.qual.C;
 
-import java.awt.image.BufferedImageOp;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,8 +23,39 @@ public class ClientApp {
                     .usePlaintext()
                     .build();
             noBlockStub = CN2223TFGrpc.newStub(channel);
-            uploadPhoto();
-            System.out.println("Hello from ClientApp!");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String line = "";
+            while(!line.equals("q")){
+                System.out.println("Escolha uma das seguintes opções:\n" +
+                        "1- Enviar Imagem\n" +
+                        "2- Obter resultados de imagem submetida\n" +
+                        "3- Obter o mapa da imagem sumetida\n" +
+                        "4- Obter nomes de fotos por grau de certeza\n" +
+                        "5- Sair\n"+
+                        "Comando: ");
+                line = reader.readLine();
+                if(line.equals("q")) return;
+                switch(Integer.parseInt(line)){
+                    case 1:
+                        uploadPhoto();
+                        break;
+                    case 2:
+                        getResults(reader);
+                        break;
+                    case 3:
+                        getMap(reader);
+                        break;
+                    case 4:
+                        photosNameWithScoreBiggerThan(reader);
+                        break;
+                    case 5:
+                        return;
+                    default:
+                        System.out.println("Comando inválido\n\n");
+                        break;
+                }
+            }
+
         }catch(Exception exp){
             exp.printStackTrace();
         }
@@ -63,9 +92,31 @@ public class ClientApp {
             System.out.println("Waiting for server to Upload Photo");
             Thread.sleep(1 * 1000);
         }
-        if (blobIdentifierObserver.OnSuccesss()) {
-            System.out.println("Photo Uploaded!");
+    }
+
+    static void getResults(BufferedReader reader) throws IOException, InterruptedException {
+        System.out.println("Introduza o Id do request: ");
+        String requestId = reader.readLine();
+
+        BlobIdentifier blobIdentifier = BlobIdentifier.newBuilder()
+                        .setId(requestId).build();
+        ClientObserverGetDetails responseObserver = new ClientObserverGetDetails();
+        noBlockStub.getLandmarks(blobIdentifier, responseObserver);
+
+        while (!responseObserver.isCompleted) {
+            System.out.println("Waiting for server to Upload Photo");
+            Thread.sleep(1 * 1000);
         }
+    }
+    static void getMap(BufferedReader reader) throws IOException{
+        System.out.println("Introduza o Id do request: ");
+        String requestId = reader.readLine();
+
+        BlobIdentifier blobIdentifier = BlobIdentifier.newBuilder()
+                .setId(requestId).build();
+    }
+    static void photosNameWithScoreBiggerThan(BufferedReader reader) throws IOException{
+
     }
 
 

@@ -88,11 +88,6 @@ public class ServerStreamObserverBlobIdentifier  implements StreamObserver<Block
                 PubSub.createPubSubTopic();
                 PubSub.publishMessage(blobInformation[2], blobInformation[0], blobInformation[1]);
 
-//                {
-//                    "requestId":  "b36ffd68-52a0-43bf-b5a2-ebdb2b635729",
-//                    "bucketName": "cn2223-g06-tf",
-//                    "blobName": "b36ffd68-52a0-43bf-b5a2-ebdb2b635729paulinho.png"
-//                }
                 sBlobIdentifier.onNext(BlobIdentifier.newBuilder()
                         .setId(blobInformation[2]).build());
                 sBlobIdentifier.onCompleted();
