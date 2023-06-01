@@ -108,12 +108,19 @@ public class ClientApp {
             Thread.sleep(1 * 1000);
         }
     }
-    static void getMap(BufferedReader reader) throws IOException{
+    static void getMap(BufferedReader reader) throws IOException, InterruptedException {
         System.out.println("Introduza o Id do request: ");
         String requestId = reader.readLine();
 
         BlobIdentifier blobIdentifier = BlobIdentifier.newBuilder()
                 .setId(requestId).build();
+
+        ClientGetMap getMap = new ClientGetMap();
+        noBlockStub.getMapImage(blobIdentifier, getMap);
+
+        while (!getMap.isCompleted) {
+            Thread.sleep(1 * 1000);
+        }
     }
     static void photosNameWithScoreBiggerThan(BufferedReader reader) throws IOException{
 

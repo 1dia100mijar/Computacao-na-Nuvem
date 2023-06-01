@@ -4,10 +4,16 @@ import cn2223tf.Firestore.FirestoreOperations;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+import com.google.protobuf.ByteString;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +80,36 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
 
     @Override
     public void getMapImage(BlobIdentifier request, StreamObserver<MapResult> responseObserver){
+        System.out.println("Get map from a request ID");
 
+        try {
+            //call firestore
+            String blobName = firestoreOperations.getStaticMap(request.getId());
+            //call cloud storage
+            StorageOptions storageOptions = StorageOptions.getDefaultInstance();
+            Storage storage = storageOptions.getService();
+            StorageOperations storageOperations = new StorageOperations(storage);
+            byte[] mapData = storageOperations.downloadBlobFromBucket(BUCKETNAME, blobName);
+
+            byte[] buffer = new byte[1024];
+            try (InputStream input = new ByteArrayInputStream(mapData)) {
+                while (input.read(buffer) >= 0) {
+                    try {
+                        responseObserver.onNext(
+                                MapResult.newBuilder()
+                                        .setMap(ByteString.copyFrom(buffer))
+                                        .build()
+                        );
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                responseObserver.onCompleted();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

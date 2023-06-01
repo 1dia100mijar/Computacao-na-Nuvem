@@ -26,4 +26,11 @@ public class FirestoreOperations {
         return document.getData();
     }
 
+    public static String getStaticMap(String requestId) throws ExecutionException, InterruptedException {
+        DocumentReference docRef = db.collection(collection).document(requestId);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        return String.valueOf(document.getData().get("blobMap"));
+    }
+
 }
