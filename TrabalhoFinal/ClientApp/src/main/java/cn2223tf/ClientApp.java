@@ -122,8 +122,17 @@ public class ClientApp {
             Thread.sleep(1 * 1000);
         }
     }
-    static void photosNameWithScoreBiggerThan(BufferedReader reader) throws IOException{
+    static void photosNameWithScoreBiggerThan(BufferedReader reader) throws IOException, InterruptedException {
+        System.out.println("Intorduza o grau de certeza minimo que pretende: ");
+        Float accuracyValue = Float.valueOf(String.valueOf(reader.readLine()));
 
+        Accuracy accuracy = Accuracy.newBuilder()
+                .setAccuracy(accuracyValue).build();
+        ClientGetAccuracy getAccuracy = new ClientGetAccuracy(accuracyValue);
+        noBlockStub.getAccurateLandmarks(accuracy, getAccuracy);
+        while (!getAccuracy.isCompleted) {
+            Thread.sleep(1 * 1000);
+        }
     }
 
 
