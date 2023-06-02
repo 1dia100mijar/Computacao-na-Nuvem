@@ -45,24 +45,17 @@ public class ServerStreamObserverBlobIdentifier  implements StreamObserver<Block
 
     @Override
     public void onNext(Block block) {
+        //Add bytes from Block to the byte[] in server
         byte[] photoBlock = block.getData().toByteArray();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte[] combinedArray = new byte[photo.length + photoBlock.length];
         System.arraycopy(photo, 0, combinedArray, 0, photo.length);
         System.arraycopy(photoBlock, 0, combinedArray, photo.length, photoBlock.length);
         photo = combinedArray;
+
         if(onNextTimesCalled++ == 0){
+            System.out.println("Downloading Photo from client");
             photoName = block.getBlobName();
             photoDataType = block.getDataType();
-        }
-        photo = combinedArray;
-        photoName = block.getBlobName();
-        photoDataType = block.getDataType();
-
-        try {
-            outputStream.write( photo );
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -75,19 +68,23 @@ public class ServerStreamObserverBlobIdentifier  implements StreamObserver<Block
     public void onCompleted() {
         try{
             if(photoName != null && outputStream  != null){
+                System.out.println("Download Photo from client complete");
+                //instantiate storage
                 StorageOptions storageOptions = StorageOptions.getDefaultInstance();
                 Storage storage = storageOptions.getService();
                 StorageOperations storageOperations = new StorageOperations(storage);
+
                 if(!verifyIfBucketExists(storageOperations)){
                     storageOperations.createBucket(BUCKET_NAME);
                 }
+                //Cloud Storage
                 String[] blobInformation = storageOperations.uploadBlobToBucket(BUCKET_NAME, photo, photoName, photoDataType);
-                System.out.println("Photo uploaded!!!");
-//                BlobId blobId = BlobId.of(blobInformation[0], blobInformation[1]);
 
+                //PubSub
                 PubSub.createPubSubTopic();
                 PubSub.publishMessage(blobInformation[2], blobInformation[0], blobInformation[1]);
 
+                //send requestID to client
                 sBlobIdentifier.onNext(BlobIdentifier.newBuilder()
                         .setId(blobInformation[2]).build());
                 sBlobIdentifier.onCompleted();
@@ -97,14 +94,11 @@ public class ServerStreamObserverBlobIdentifier  implements StreamObserver<Block
         }
     }
 
-
     private static boolean verifyIfBucketExists(StorageOperations storageOperations) throws Exception {
         String[] buckets = storageOperations.listBuckets();
         boolean haveBucket = false;
         for(String bucket: buckets){
-            if (bucket.equals(BUCKET_NAME)) {
-                haveBucket = true; break;
-            }
+            if (bucket.equals(BUCKET_NAME)) {haveBucket = true; break;}
         }
         return haveBucket;
     }

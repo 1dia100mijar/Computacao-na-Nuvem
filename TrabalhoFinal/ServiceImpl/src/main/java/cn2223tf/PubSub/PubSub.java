@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class PubSub {
     static String PROJECT_ID = "cn2223-t2-g06";
@@ -24,13 +25,24 @@ public class PubSub {
     static String Schema_ID = "cn2223-g06-tf";
     static String avscFile = "schema_structure.json";
 
-    public static void createPubSubTopic() throws IOException {
-        topicAdmin = TopicAdminClient.create();
+    public static void createPubSubTopic() throws InterruptedException, IOException {
+        try{
+            topicAdmin = TopicAdminClient.create();
+        } catch(Exception e){
+            topicAdmin.shutdown();
+            topicAdmin.awaitTermination(5, TimeUnit.SECONDS);
+            topicAdmin = TopicAdminClient.create();
+        }
         if(!verifyIfTopicExists(PubSubTopicName)){
             System.out.println("Creating topic PUBSUB");
             TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, PubSubTopicName);
             Topic topic=topicAdmin.createTopic(tName);
         }
+        else System.out.println("Pub/Sub topic already exists");
+    }
+    public static void stopPubSubTopic(){
+        topicAdmin.close();
+        System.out.println("Topic Admin close!");
     }
     public static boolean verifyIfTopicExists(String topicName){
         TopicAdminClient.ListTopicsPagedResponse res = topicAdmin.listTopics(ProjectName.of(PROJECT_ID));
@@ -43,10 +55,7 @@ public class PubSub {
     }
 
     public static void publishMessage(String requestId, String bucketName, String blobName) throws ExecutionException, InterruptedException, IOException {
-        String topicName = PubSubTopicName;
-
-
-        TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, topicName);
+        TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, PubSubTopicName);
         Publisher publisher = Publisher.newBuilder(tName).build();
 
         PubsubMessage pubsubMessage = PubsubMessage.newBuilder()

@@ -2,6 +2,7 @@ package cn2223tf;
 
 import cn2223tf.Firestore.FirestoreFilteredDocument;
 import cn2223tf.Firestore.FirestoreOperations;
+import cn2223tf.PubSub.PubSub;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
@@ -31,11 +32,12 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
             svc.start();
             firestoreOperations = new FirestoreOperations();
             System.out.println("Server started, listening on " + svcPort);
-            System.out.println("Hello, gRPC world!");
-            firestoreOperations.getPhotoNameWithAccuracyBiggerThan(0.6);
+            System.out.println("Para terminar o servidor pressione qualquer tecla");
             Scanner scan = new Scanner(System.in);
             scan.nextLine();
             svc.shutdown();
+            firestoreOperations.stop();
+            PubSub.stopPubSubTopic();
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,17 +54,19 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
     @Override
     public void getLandmarks(BlobIdentifier request, StreamObserver<LandMarksResult> responseObserver){
         System.out.println("Get results of an imageID called");
-        //call firestore
         Map<String, Object> map = null;
-        ArrayList<Map<String, String>> landmarks = null;
+        ArrayList<Map<String, String>> landmarks = new ArrayList<>();
+
+        //call firestore
         try {
             map = firestoreOperations.getResultsFromPhotoId(request.getId());
             landmarks = (ArrayList<Map<String, String>>) map.get("landmarks");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        } catch (Exception e) {}
+
+        //Create client return
         LandMarksResult.Builder landmarksResult = LandMarksResult.newBuilder();
 
+        //add landmarks to client return
         for (Map<String, String> landmark:landmarks){
             LandmarkElement landmarkElement = LandmarkElement.newBuilder()
                     .setName(landmark.get("name"))
@@ -73,6 +77,7 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
             landmarksResult.addLandmark(landmarkElement);
         }
 
+        //Send information to client
         LandMarksResult result = landmarksResult.build();
         responseObserver.onNext(result);
         responseObserver.onCompleted();
@@ -85,16 +90,18 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
         try {
             //call firestore
             String blobName = firestoreOperations.getStaticMap(request.getId());
-            //call cloud storage
+            //isntantiate cloud storage
             StorageOptions storageOptions = StorageOptions.getDefaultInstance();
             Storage storage = storageOptions.getService();
             StorageOperations storageOperations = new StorageOperations(storage);
 
+            //Download Map from Cloud Storage
             byte[] mapData = new byte[0];
             try {
                 mapData = storageOperations.downloadBlobFromBucket(BUCKETNAME, blobName);
             } catch (Exception e){}
 
+            //Create and send client response
             byte[] buffer = new byte[1024];
             try (InputStream input = new ByteArrayInputStream(mapData)) {
                 while (input.read(buffer) >= 0) {
@@ -120,17 +127,25 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
     public void getAccurateLandmarks(Accuracy request, StreamObserver<AccuracyResult> responseObserver){
         System.out.println("Getting Photo names with accuracy bigger than " + request.getAccuracy());
         ArrayList<FirestoreFilteredDocument> docs = null;
+
+        //Access firestore documents with landmark accuracy bugger than requested
         try {
             docs = firestoreOperations.getPhotoNameWithAccuracyBiggerThan(request.getAccuracy());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //Instantiate client response
         AccuracyResult.Builder builder = AccuracyResult.newBuilder();
+
+        //Add information to client response
         for(FirestoreFilteredDocument filteredDocument:docs){
             builder.addLandmark(LandMarkAccuracyResult.newBuilder().setName(filteredDocument.name)
                     .setImageName(filteredDocument.blobImage)
                     .build());
         }
+
+        //Send response to client
         AccuracyResult accuracyResult = builder.build();
         responseObserver.onNext(accuracyResult);
         responseObserver.onCompleted();

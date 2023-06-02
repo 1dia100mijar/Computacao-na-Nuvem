@@ -9,13 +9,17 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 public class ClientApp {
     private static String svcIP = "localhost"; private static int svcPort = 8000;
     private static ManagedChannel channel;
     private static CN2223TFGrpc.CN2223TFStub noBlockStub;
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
+        System.out.println("ip server");
+        BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
+        svcIP = reader1.readLine();
         try{
             channel = ManagedChannelBuilder.forAddress(svcIP, svcPort)
                     // Channels are secure by default (via SSL/TLS).
@@ -49,6 +53,8 @@ public class ClientApp {
                         photosNameWithScoreBiggerThan(reader);
                         break;
                     case 5:
+                        channel.shutdown();
+                        channel.awaitTermination(5, TimeUnit.SECONDS);
                         return;
                     default:
                         System.out.println("Comando inválido\n\n");
@@ -71,6 +77,7 @@ public class ClientApp {
 
         StreamObserver<Block> blockRequest = noBlockStub.uploadPhoto(blobIdentifierObserver);
 
+        //Send photo in stream Blocks
         byte[] buffer = new byte[1024];
         try (InputStream input = new ByteArrayInputStream(Files.readAllBytes(filePath))) {
             while (input.read(buffer) >= 0) {
@@ -89,7 +96,7 @@ public class ClientApp {
         }
         while (!blobIdentifierObserver.isCompleted()) {
             System.out.println("Waiting for server to Upload Photo");
-            Thread.sleep(1 * 1000);
+            Thread.sleep(2 * 1000);
         }
     }
 

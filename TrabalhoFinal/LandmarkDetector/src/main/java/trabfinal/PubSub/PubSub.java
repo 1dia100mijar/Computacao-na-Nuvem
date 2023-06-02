@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class PubSub {
     static String PROJECT_ID = "cn2223-t2-g06";
@@ -19,8 +20,14 @@ public class PubSub {
     static String subscriberName = "cn2223-g06-tf-subscriber";
     static String subscriptionName = "cn2223-g06-tf-subscription";
 
-    public static void createPubSubTopic() throws IOException {
-        topicAdmin = TopicAdminClient.create();
+    public static void createPubSubTopic() throws IOException, InterruptedException {
+        try{
+            topicAdmin = TopicAdminClient.create();
+        } catch(Exception e){
+            topicAdmin.shutdown();
+            topicAdmin.awaitTermination(5, TimeUnit.SECONDS);
+            topicAdmin = TopicAdminClient.create();
+        }
         if(!verifyIfTopicExists(PubSubTopicName)){
             System.out.println("Creating topic PUBSUB");
             TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, PubSubTopicName);
@@ -53,10 +60,13 @@ public class PubSub {
         publisher.shutdown();
     }
 
-    public static void createSubscription() throws IOException {
+    public static void createSubscription() {
         TopicName tName=TopicName.ofProjectTopicName(PROJECT_ID, PubSubTopicName);
         SubscriptionName subsName = SubscriptionName.of(PROJECT_ID, subscriptionName);
-        SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create();
+        SubscriptionAdminClient subscriptionAdminClient = null;
+        try {
+            subscriptionAdminClient = SubscriptionAdminClient.create();
+        } catch (Exception e) {}
         PushConfig pconfig=PushConfig.getDefaultInstance();
         subscriptionAdminClient.createSubscription(subsName, tName, pconfig, 0);
         subscriptionAdminClient.close();

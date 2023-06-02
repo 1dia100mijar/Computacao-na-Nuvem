@@ -19,6 +19,10 @@ public class FirestoreOperations {
         db = options.getService();
     }
 
+    public void stop() throws Exception {
+        db.close();
+    }
+
     public Map<String, Object> getResultsFromPhotoId(String photoId) throws ExecutionException, InterruptedException {
         DocumentReference docRef = db.collection(collection).document(photoId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
@@ -36,11 +40,15 @@ public class FirestoreOperations {
     public ArrayList<FirestoreFilteredDocument> getPhotoNameWithAccuracyBiggerThan(double accuracy) throws ExecutionException, InterruptedException {
         Query queryDocs = db.collection(collection);
         ArrayList<FirestoreFilteredDocument> docsFiltered = new ArrayList<>();
-        for (FirestoreObject message : queryDocs.get().get().toObjects(FirestoreObject.class)) {
-            for (LandmarkFirestore landmark : message.landmarks) {
+
+        //Get all firestore documents and convert them to FirestoreObject class, that was implemented
+        //Couldn't get the documents with a firestore query because the landmarks where stored inside an Array
+        for (FirestoreObject firestoreObject : queryDocs.get().get().toObjects(FirestoreObject.class)) {
+            for (LandmarkFirestore landmark : firestoreObject.landmarks) {
+                //Filtering the results
                 if (landmark.score >= accuracy) {
                     FirestoreFilteredDocument doc = new FirestoreFilteredDocument();
-                    doc.blobImage = message.blobImage;
+                    doc.blobImage = firestoreObject.blobImage;
                     doc.name = landmark.name;
                     docsFiltered.add(doc);
                 }

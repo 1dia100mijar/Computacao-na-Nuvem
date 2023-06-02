@@ -41,6 +41,9 @@ public class MessageReceiveHandler implements MessageReceiver {
             String[] blobNameSplited = blobName.split("/");
             String imageName = blobNameSplited[0] + "/staticMap_"+blobNameSplited[1];
             try{
+                if(!verifyIfBucketExists(storageOperations)){
+                    storageOperations.createBucket(BUCKETNAME);
+                }
                 storageOperations.uploadBlobToBucket(bucketName, image.readAllBytes(), imageName, "image/png");
                 image.close();
             }catch (Exception e){
@@ -66,5 +69,14 @@ public class MessageReceiveHandler implements MessageReceiver {
             throw new RuntimeException(e);
         }
         ackReply.ack(); // acknowledge positivo
+    }
+
+    private static boolean verifyIfBucketExists(StorageOperations storageOperations) throws Exception {
+        String[] buckets = storageOperations.listBuckets();
+        boolean haveBucket = false;
+        for(String bucket: buckets){
+            if (bucket.equals(BUCKETNAME)) {haveBucket = true; break;}
+        }
+        return haveBucket;
     }
 }

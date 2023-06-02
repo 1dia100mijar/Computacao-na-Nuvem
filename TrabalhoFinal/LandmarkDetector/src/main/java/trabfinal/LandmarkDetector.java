@@ -28,6 +28,7 @@ public class LandmarkDetector {
 
     public static void main(String[] args) throws IOException {
         try{
+            PubSub.createPubSubTopic();
             PubSub.createSubscription();
         }catch(AlreadyExistsException e){
             System.out.println("subscription already exists!");
