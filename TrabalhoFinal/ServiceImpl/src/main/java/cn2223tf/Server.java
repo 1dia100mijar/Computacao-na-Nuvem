@@ -54,12 +54,13 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
         System.out.println("Get results of an imageID called");
         //call firestore
         Map<String, Object> map = null;
+        ArrayList<Map<String, String>> landmarks = null;
         try {
             map = firestoreOperations.getResultsFromPhotoId(request.getId());
+            landmarks = (ArrayList<Map<String, String>>) map.get("landmarks");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        ArrayList<Map<String, String>> landmarks = (ArrayList<Map<String, String>>) map.get("landmarks");
         LandMarksResult.Builder landmarksResult = LandMarksResult.newBuilder();
 
         for (Map<String, String> landmark:landmarks){
@@ -88,7 +89,11 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
             StorageOptions storageOptions = StorageOptions.getDefaultInstance();
             Storage storage = storageOptions.getService();
             StorageOperations storageOperations = new StorageOperations(storage);
-            byte[] mapData = storageOperations.downloadBlobFromBucket(BUCKETNAME, blobName);
+
+            byte[] mapData = new byte[0];
+            try {
+                mapData = storageOperations.downloadBlobFromBucket(BUCKETNAME, blobName);
+            } catch (Exception e){}
 
             byte[] buffer = new byte[1024];
             try (InputStream input = new ByteArrayInputStream(mapData)) {

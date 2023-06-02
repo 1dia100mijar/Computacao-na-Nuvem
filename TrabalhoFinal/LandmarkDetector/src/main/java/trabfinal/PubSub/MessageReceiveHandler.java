@@ -25,7 +25,13 @@ public class MessageReceiveHandler implements MessageReceiver {
         String bucketName = map.get("bucketName");
         try {
             //Send photo to VisionAPI & MapsAPI
-            DetectLandmarksGcs landmarksGcs = LandmarkDetector.detectLandmarksGcs(requestId, blobName, bucketName);
+            DetectLandmarksGcs landmarksGcs = null;
+            try {
+                landmarksGcs =LandmarkDetector.detectLandmarksGcs(requestId, blobName, bucketName);
+            } catch (Exception e){
+                System.out.println("photo with no landmarks!");
+            }
+
 
             //upload photo to google Cloud
             StorageOptions storageOptions = StorageOptions.getDefaultInstance();
@@ -34,8 +40,12 @@ public class MessageReceiveHandler implements MessageReceiver {
             InputStream image = landmarksGcs.photo;
             String[] blobNameSplited = blobName.split("/");
             String imageName = blobNameSplited[0] + "/staticMap_"+blobNameSplited[1];
-            storageOperations.uploadBlobToBucket(bucketName, image.readAllBytes(), imageName, "image/png");
-            image.close();
+            try{
+                storageOperations.uploadBlobToBucket(bucketName, image.readAllBytes(), imageName, "image/png");
+                image.close();
+            }catch (Exception e){
+                System.out.println("Upload photo canceled because dont have landmarks");
+            }
 
             //Add information to Firestore
             FirestoreOperations firestoreOperations = new FirestoreOperations();
@@ -51,6 +61,7 @@ public class MessageReceiveHandler implements MessageReceiver {
             firestoreOperations.populateFirestore(firestoreData);
 
         } catch (Exception e) {
+            e.printStackTrace();
             ackReply.nack();
             throw new RuntimeException(e);
         }

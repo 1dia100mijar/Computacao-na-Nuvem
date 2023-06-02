@@ -40,7 +40,6 @@ public class ClientGetAccuracy implements StreamObserver<AccuracyResult> {
                 System.out.println("Landmark: " + landmarkResult.getName() +
                         "\n\tblob: " + landmarkResult.getImageName() + "\n");
             }
-            System.out.println("\n");
             isCompleted=true;success=true;
         }
     }

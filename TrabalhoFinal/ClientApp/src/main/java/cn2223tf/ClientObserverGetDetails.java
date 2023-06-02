@@ -19,16 +19,19 @@ public class ClientObserverGetDetails implements StreamObserver<LandMarksResult>
 
     @Override
     public void onCompleted() {
-        System.out.println("Upload Completed!");
-        System.out.println("Landmarks:");
-        for(LandmarkElement landmark: landMarksResult.getLandmarkList()){
-            System.out.println("Landmark: "+landmark.getName()
-                + "\nLatitude: " + landmark.getLatitude()
-                + "\nLongitude: " + landmark.getLongitude()
-                + "\nAccuracy: " + landmark.getAccuracy() + "\n");
+        if(landMarksResult.getLandmarkList().size() == 0){
+            System.out.println("\nThe photo associated with this request id don't have landmarks!\n");
+        }
+        else {
+            System.out.println("Landmarks:");
+            for(LandmarkElement landmark: landMarksResult.getLandmarkList()){
+                System.out.println("Landmark: "+landmark.getName()
+                        + "\nLatitude: " + landmark.getLatitude()
+                        + "\nLongitude: " + landmark.getLongitude()
+                        + "\nAccuracy: " + landmark.getAccuracy() + "\n");
+            }
+            System.out.println("\n");
         }
         isCompleted=true;success=true;
     }
-
-
 }

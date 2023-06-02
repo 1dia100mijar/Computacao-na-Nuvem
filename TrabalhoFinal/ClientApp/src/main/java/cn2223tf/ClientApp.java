@@ -25,7 +25,7 @@ public class ClientApp {
             noBlockStub = CN2223TFGrpc.newStub(channel);
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String line = "";
-            while(!line.equals("q")){
+            while(true){
                 System.out.println("Escolha uma das seguintes opções:\n" +
                         "1- Enviar Imagem\n" +
                         "2- Obter resultados de imagem submetida\n" +
@@ -55,7 +55,6 @@ public class ClientApp {
                         break;
                 }
             }
-
         }catch(Exception exp){
             exp.printStackTrace();
         }
@@ -104,7 +103,6 @@ public class ClientApp {
         noBlockStub.getLandmarks(blobIdentifier, responseObserver);
 
         while (!responseObserver.isCompleted) {
-            System.out.println("Waiting for server to Upload Photo");
             Thread.sleep(1 * 1000);
         }
     }
@@ -123,8 +121,16 @@ public class ClientApp {
         }
     }
     static void photosNameWithScoreBiggerThan(BufferedReader reader) throws IOException, InterruptedException {
-        System.out.println("Intorduza o grau de certeza minimo que pretende: ");
-        Float accuracyValue = Float.valueOf(String.valueOf(reader.readLine()));
+        System.out.println("Introduza o grau de certeza minimo que pretende entre 0 e 1: ");
+        Float accuracyValue = null;
+        try{
+            accuracyValue = Float.valueOf(String.valueOf(reader.readLine()));
+        }catch (Exception e){
+            System.out.println("O valor não foi inserido corretamente!" +
+                    "\nIntroduza o grau de certeza minimo que pretende entre 0 e 1: ");
+            accuracyValue = Float.valueOf(String.valueOf(reader.readLine()));
+        }
+
 
         Accuracy accuracy = Accuracy.newBuilder()
                 .setAccuracy(accuracyValue).build();

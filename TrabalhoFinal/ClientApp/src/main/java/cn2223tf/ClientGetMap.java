@@ -26,20 +26,23 @@ public class ClientGetMap implements StreamObserver<MapResult> {
 
     @Override
     public void onCompleted() {
-        System.out.println("Indique o nome do ficheiro que pretende fazer download: ");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String fileName = null;
-        try {
-            fileName = reader.readLine();
-            fileName = fileName + ".png";
-            System.out.println(fileName);
-            FileOutputStream outputStream = new FileOutputStream(fileName);
-            outputStream.write(map);
-            isCompleted=true;success=true;
-            System.out.println("completed!!!!");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(map.length == 0){
+            System.out.println("\nThere is no map associated with this request id\n");
         }
-
+        else{
+            System.out.println("Indique o nome do ficheiro que pretende fazer download: ");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String fileName = null;
+            try {
+                fileName = reader.readLine();
+                fileName = fileName + ".png";
+                System.out.println(fileName);
+                FileOutputStream outputStream = new FileOutputStream(fileName);
+                outputStream.write(map);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+                isCompleted=true;success=true;
     }
 }

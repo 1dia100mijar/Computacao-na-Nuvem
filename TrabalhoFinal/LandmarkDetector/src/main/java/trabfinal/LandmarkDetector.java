@@ -34,17 +34,7 @@ public class LandmarkDetector {
         }
         catch (Exception e){throw new RuntimeException(e);}
         PubSub.createSubscriber();
-
-//        detectAllLandmarksGcs(args[0]);
-//        PubSub.stopSubscriber(subscriber);
     }
-
-//    public static void detectAllLandmarksGcs(String apiKey, Map<String, String> map) throws IOException {
-//        for (String name : images) {
-//            String blobGsPath = "gs://"+BUCKET_NAME+"/" + name;
-//            detectLandmarksGcs(blobGsPath, apiKey);
-//        }
-//    }
 
     // Detects landmarks in the specified remote image on Google Cloud Storage.
     public static DetectLandmarksGcs detectLandmarksGcs(String requestId,String blobName,String bucketname) throws IOException {
@@ -114,15 +104,6 @@ public class LandmarkDetector {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             in = conn.getInputStream();
-//            BufferedInputStream bufIn = new BufferedInputStream(in);
-//            FileOutputStream out = new FileOutputStream("static_map_"+ UUID.randomUUID() +".png");
-//            byte[] buffer = new byte[8*1024];
-//            int bytesRead;
-//            while ((bytesRead = bufIn.read(buffer)) != -1) {
-//                out.write(buffer, 0, bytesRead);
-//            }
-//            out.close();
-//            bufIn.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
