@@ -1,5 +1,6 @@
 package cn2223tf;
 
+import cn2223tf.Firestore.FirestoreFilteredDocument;
 import cn2223tf.Firestore.FirestoreOperations;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
@@ -34,6 +35,7 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
             firestoreOperations = new FirestoreOperations();
             System.out.println("Server started, listening on " + svcPort);
             System.out.println("Hello, gRPC world!");
+            firestoreOperations.getPhotoNameWithAccuracyBiggerThan(0.6);
             Scanner scan = new Scanner(System.in);
             scan.nextLine();
             svc.shutdown();
@@ -114,7 +116,21 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
 
     @Override
     public void getAccurateLandmarks(Accuracy request, StreamObserver<AccuracyResult> responseObserver){
-
+        System.out.println("Getting Photo names with accuracy bigger than " + request.getAccuracy());
+        ArrayList<FirestoreFilteredDocument> docs = null;
+        try {
+            docs = firestoreOperations.getPhotoNameWithAccuracyBiggerThan(request.getAccuracy());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        AccuracyResult.Builder builder = AccuracyResult.newBuilder();
+        for(FirestoreFilteredDocument filteredDocument:docs){
+            builder.addLandmark(LandMarkAccuracyResult.newBuilder().setName(filteredDocument.name)
+                    .setImageName(filteredDocument.blobImage)
+                    .build());
+        }
+        AccuracyResult accuracyResult = builder.build();
+        responseObserver.onNext(accuracyResult);
+        responseObserver.onCompleted();
     }
-
 }
