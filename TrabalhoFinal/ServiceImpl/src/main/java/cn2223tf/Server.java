@@ -32,10 +32,7 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
             svc.start();
             firestoreOperations = new FirestoreOperations();
             System.out.println("Server started, listening on " + svcPort);
-            System.out.println("Para terminar o servidor pressione qualquer tecla");
-            Scanner scan = new Scanner(System.in);
-            scan.nextLine();
-            svc.shutdown();
+            svc.awaitTermination();
             firestoreOperations.stop();
             PubSub.stopPubSubTopic();
         }catch (Exception e) {

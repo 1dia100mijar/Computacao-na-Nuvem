@@ -16,12 +16,9 @@ public class ClientApp {
     private static ManagedChannel channel;
     private static CN2223TFGrpc.CN2223TFStub noBlockStub;
 
-    public static void main(String[] args) throws IOException {
-        System.out.println("ip server");
-        BufferedReader reader1 = new BufferedReader(new InputStreamReader(System.in));
-        svcIP = reader1.readLine();
+    public static void main(String[] args){
         try{
-            channel = ManagedChannelBuilder.forAddress(svcIP, svcPort)
+            channel = ManagedChannelBuilder.forAddress("34.163.40.228", svcPort)
                     // Channels are secure by default (via SSL/TLS).
                     // For the example we disable TLS to avoid needing certificates.
                     .usePlaintext()
