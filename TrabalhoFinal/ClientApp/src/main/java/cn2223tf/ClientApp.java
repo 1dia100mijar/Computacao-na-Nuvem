@@ -6,9 +6,15 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class ClientApp {
@@ -17,12 +23,16 @@ public class ClientApp {
     private static CN2223TFGrpc.CN2223TFStub noBlockStub;
 
     public static void main(String[] args){
+        System.out.println("A estabelecer a ligação com o servidor");
+        String serverAddress = getServerIP();
+        System.out.println(serverAddress);
         try{
-            channel = ManagedChannelBuilder.forAddress("34.163.40.228", svcPort)
+            channel = ManagedChannelBuilder.forAddress(serverAddress, svcPort)
                     // Channels are secure by default (via SSL/TLS).
                     // For the example we disable TLS to avoid needing certificates.
                     .usePlaintext()
                     .build();
+            System.out.println("Ligação estabelecida!");
             noBlockStub = CN2223TFGrpc.newStub(channel);
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             String line = "";
@@ -61,6 +71,35 @@ public class ClientApp {
         }catch(Exception exp){
             exp.printStackTrace();
         }
+    }
+
+    static String getServerIP(){
+        String ips = getServersIP();
+        String[] ipSeparated = ips.split("/");
+
+        Random rand = new Random();
+        int index = rand.nextInt(ipSeparated.length);
+        return ipSeparated[index];
+    }
+
+    static String getServersIP() {
+        StringBuilder ips = new StringBuilder();
+        try {
+            URL triggerURL = new URL("https://europe-west1-cn2223-t2-g06.cloudfunctions.net/LookupFunction");
+            HttpURLConnection con = (HttpURLConnection) triggerURL.openConnection();
+            con.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                ips.append(inputLine);
+            }
+            in.close();
+            con.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ips.toString();
     }
 
     static void uploadPhoto() throws IOException, InterruptedException {
