@@ -7,10 +7,7 @@ import io.grpc.stub.StreamObserver;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,9 +20,8 @@ public class ClientApp {
     private static CN2223TFGrpc.CN2223TFStub noBlockStub;
 
     public static void main(String[] args){
-        System.out.println("A estabelecer a ligação com o servidor");
+        System.out.println("A estabelecer a ligação com o servidor...");
         String serverAddress = getServerIP();
-        System.out.println(serverAddress);
         try{
             channel = ManagedChannelBuilder.forAddress(serverAddress, svcPort)
                     // Channels are secure by default (via SSL/TLS).
@@ -109,7 +105,7 @@ public class ClientApp {
         Path filePath = Paths.get(photoName);
         String contentType = Files.probeContentType(filePath);
 
-        ClientStreamObserver blobIdentifierObserver = new ClientStreamObserver();
+        ClientStreamUpload blobIdentifierObserver = new ClientStreamUpload();
 
         StreamObserver<Block> blockRequest = noBlockStub.uploadPhoto(blobIdentifierObserver);
 

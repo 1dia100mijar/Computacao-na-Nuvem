@@ -25,8 +25,7 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
 
     private static int svcPort = 8000;
     private static FirestoreOperations firestoreOperations = null;
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args){
         try{
             io.grpc.Server svc = ServerBuilder.forPort(svcPort).addService(new Server()).build();
             svc.start();

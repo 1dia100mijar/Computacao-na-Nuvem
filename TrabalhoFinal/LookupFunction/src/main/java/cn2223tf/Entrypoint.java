@@ -5,12 +5,8 @@ import com.google.cloud.compute.v1.InstancesClient;
 import com.google.cloud.functions.HttpFunction;
 import com.google.cloud.functions.HttpRequest;
 import com.google.cloud.functions.HttpResponse;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.BufferedWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Entrypoint implements HttpFunction {
     @Override
