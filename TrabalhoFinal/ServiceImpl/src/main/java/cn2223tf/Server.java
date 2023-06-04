@@ -86,7 +86,7 @@ public class Server extends CN2223TFGrpc.CN2223TFImplBase {
         try {
             //call firestore
             String blobName = firestoreOperations.getStaticMap(request.getId());
-            //isntantiate cloud storage
+            //instantiate cloud storage
             StorageOptions storageOptions = StorageOptions.getDefaultInstance();
             Storage storage = storageOptions.getService();
             StorageOperations storageOperations = new StorageOperations(storage);

@@ -26,7 +26,7 @@ public class LandmarkDetector {
     final static String SIZE = "600x300";
     static String apiKey = "AIzaSyD25lWtl-Ox6wA5bD-ZmWKVOAYvlhgUiqM";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try{
             PubSub.createPubSubTopic();
             PubSub.createSubscription();
