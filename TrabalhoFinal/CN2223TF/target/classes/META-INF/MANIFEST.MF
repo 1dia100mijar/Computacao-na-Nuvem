@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: CN2223TF.cn2223tf
-
