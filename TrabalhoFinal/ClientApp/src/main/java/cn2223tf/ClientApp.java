@@ -21,8 +21,8 @@ public class ClientApp {
 
     public static void main(String[] args){
         System.out.println("A estabelecer a ligação com o servidor...");
-        String serverAddress = getServerIP();
         try{
+            String serverAddress = getServerIP();
             channel = ManagedChannelBuilder.forAddress(serverAddress, svcPort)
                     // Channels are secure by default (via SSL/TLS).
                     // For the example we disable TLS to avoid needing certificates.
@@ -69,13 +69,23 @@ public class ClientApp {
         }
     }
 
-    static String getServerIP(){
+    static String getServerIP() throws IOException {
         String ips = getServersIP();
         String[] ipSeparated = ips.split("/");
 
-        Random rand = new Random();
-        int index = rand.nextInt(ipSeparated.length);
-        return ipSeparated[index];
+//        Random rand = new Random();
+//        int index = rand.nextInt(ipSeparated.length);
+//        return ipSeparated[index];
+
+        System.out.println("Selecione o ip a que se pretende conectar:");
+        int aux = 1;
+        for(String ip: ipSeparated){
+            System.out.println("\t"+aux+": "+ip);
+            aux++;
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        int ip = Integer.parseInt(reader.readLine());
+        return ipSeparated[ip-1];
     }
 
     static String getServersIP() {
